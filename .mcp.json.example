@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "youtube-research": {
+      "command": "uv",
+      "args": ["run", "--directory", "/path/to/youtube_research", "server.py"],
+      "env": {
+        "YOUTUBE_API_KEY": "YOUR_API_KEY_HERE"
+      }
+    }
+  }
+}
