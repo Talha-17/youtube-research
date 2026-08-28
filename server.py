@@ -2,7 +2,6 @@ import os
 import re
 import threading
 
-from fastapi import FastAPI
 from fastmcp import FastMCP
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
@@ -493,14 +492,6 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     if args.sse:
-        # FastMCP's internal app can be customized or we hook a health check route if supported, 
-        # but to cleanly satisfy Railway, let's attach the health check directly to FastMCP's starlette app:
-        app = mcp._app if hasattr(mcp, "_app") else None
-        
-        @mcp.custom_route("/")
-        async def health_check():
-            return {"status": "healthy"}
-
         mcp.run(transport="sse", host=args.host, port=args.port)
     else:
         mcp.run(transport="stdio", show_banner=False)
