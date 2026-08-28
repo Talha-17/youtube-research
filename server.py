@@ -483,15 +483,21 @@ def youtube_trending(region_code: str = "US", max_results: int = 10) -> list[dic
 
 
 if __name__ == "__main__":
-    import argparse
-
-    parser = argparse.ArgumentParser(description="YouTube Research MCP Server")
-    parser.add_argument("--sse", action="store_true", help="Run as SSE server (for remote/web access)")
-    parser.add_argument("--host", default="127.0.0.1", help="SSE server host (default: 127.0.0.1)")
-    parser.add_argument("--port", type=int, default=8000, help="SSE server port (default: 8000)")
-    args = parser.parse_args()
-
-    if args.sse:
-        mcp.run(transport="sse", host=args.host, port=args.port)
+    import os
+    
+    # Automatically bind to Railway's assigned port and listen globally on 0.0.0.0
+    port = int(os.environ.get("PORT", 8000))
+    if "PORT" in os.environ:
+        mcp.run(transport="sse", host="0.0.0.0", port=port)
     else:
-        mcp.run(transport="stdio", show_banner=False)
+        import argparse
+        parser = argparse.ArgumentParser(description="YouTube Research MCP Server")
+        parser.add_argument("--sse", action="store_true", help="Run as SSE server (for remote/web access)")
+        parser.add_argument("--host", default="127.0.0.1", help="SSE server host (default: 127.0.0.1)")
+        parser.add_argument("--port", type=int, default=8000, help="SSE server port (default: 8000)")
+        args = parser.parse_args()
+
+        if args.sse:
+            mcp.run(transport="sse", host=args.host, port=args.port)
+        else:
+            mcp.run(transport="stdio", show_banner=False)
